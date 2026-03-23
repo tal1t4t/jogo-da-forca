@@ -1,15 +1,17 @@
-#include <iostream>
 #include <cstdlib>
-#include <ctime> // pra setar a semente de números aleatórios
+#include <ctime>   // pra setar a semente de números aleatórios
 #include <fstream> //para mexer com arquivos
+#include <iostream>
 #include <map> // para criar dicionários
-#include <ostream> 
+#include <ostream>
 #include <string>
 #include <vector> // para criar vetores dinâmicos do código
 
 using namespace std;
 
 string palavra_secreta;
+
+int numero_categoria;
 
 map<char, bool> chutou;
 /*
@@ -22,7 +24,7 @@ define o retorno como FALSE. é assim que a palavra secreta fica registrada no
 dicionário.
 
 depois que o usuário começa os chutes, as letras da palavra mudam o valor de
-retorno para TRUE caso o chute seja certo
+retorno para TRUE caso o chute seja certo.
 */
 
 vector<char> chutes_errados;
@@ -104,7 +106,24 @@ void chuta() {
 vector<string> le_arquivo() {
     ifstream arquivo; // é necessário criar uma variável desse tipo para
                       // ler arquivos
-    arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/palavras.txt");
+
+    switch (numero_categoria) {
+    case 1:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/frutas.txt");
+        break;
+    case 2:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/nomes.txt");
+        break;
+    case 3:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/paises.txt");
+        break;
+    case 4:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/pdc.txt");
+        break;
+    case 5:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/animais.txt");
+        break;
+    }
 
     if (arquivo.is_open()) {
 
@@ -133,15 +152,31 @@ vector<string> le_arquivo() {
 
 void salva_arquivo(vector<string> nova_lista) {
     ofstream arquivo; // esse tipo de variável é capaz de escrever em arquivos
-    arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/palavras.txt");
+    switch (numero_categoria) {
+    case 1:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/frutas.txt");
+        break;
+    case 2:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/nomes.txt");
+        break;
+    case 3:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/paises.txt");
+        break;
+    case 4:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/pdc.txt");
+        break;
+    case 5:
+        arquivo.open("/home/talita/UERJ/3 PERIODO/ED2/jogo_forca/animais.txt");
+        break;
+    }
 
     if (arquivo.is_open()) { // retorna true se o arquivo for aberto com sucesso
         arquivo << nova_lista.size() << endl;
-        // sobrescreve o tamanho novo na primeira linha do arquivo. mesma lógica do
-        // cout
+        // sobrescreve o tamanho novo na primeira linha do arquivo. mesma lógica
+        // do cout
 
         for (string palavra : nova_lista) {
-            arquivo << palavra << endl;//escrevendo a nova lista
+            arquivo << palavra << endl; // escrevendo a nova lista
         }
 
         arquivo.close();
@@ -201,9 +236,60 @@ void sorteia_palavra() {
     palavra_secreta = palavras[indice_sorteado];
 }
 
+void escolhe_categoria() {
+    cout << "Escolha uma categoria de palavras: " << endl
+         << endl
+         << "[1] Frutas" << endl
+         << "[2] Nomes próprios" << endl
+         << "[3] Países" << endl
+         << "[4] Partes do corpo humano" << endl
+         << "[5] Animais" << endl
+         << endl
+         << "Sua escolha: ";
+
+    bool numero_valido;
+    do {
+        cin >> numero_categoria;
+        switch (numero_categoria) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            numero_valido = true;
+            break;
+        default:
+            numero_valido = false;
+            cout << "Insira um número válido: ";
+            break;
+        }
+    } while (!numero_valido);
+}
+
+void imprime_categoria() {
+    cout << "Categoria: ";
+    switch (numero_categoria) {
+    case 1:
+        cout << "Frutas";
+        break;
+    case 2:
+        cout << "Nomes próprios";
+        break;
+    case 3:
+        cout << "Países";
+        break;
+    case 4:
+        cout << "Partes do corpo humano";
+        break;
+    case 5:
+        cout << "Animais";
+    }
+    cout << endl;
+}
+
 int main() {
     mostra_cabecalho();
-
+    escolhe_categoria();
     le_arquivo();
     sorteia_palavra();
 
@@ -212,6 +298,8 @@ int main() {
         imprime_erros();
 
         imprime_palavra();
+
+        imprime_categoria();
 
         chuta();
     }
